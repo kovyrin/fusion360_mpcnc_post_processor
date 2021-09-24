@@ -424,7 +424,6 @@ var yFormat = createFormat({ prefix: "Y", decimals: unit == MM ? 3 : 4 });
 var zFormat = createFormat({ prefix: "Z", decimals: unit == MM ? 3 : 4 });
 var iFormat = createFormat({ prefix: "I", decimals: unit == MM ? 3 : 4 });
 var jFormat = createFormat({ prefix: "J", decimals: unit == MM ? 3 : 4 });
-var kFormat = createFormat({ prefix: "K", decimals: unit == MM ? 3 : 4 });
 
 var speedFormat = createFormat({ decimals: 0 });
 var sFormat = createFormat({ prefix: "S", decimals: 0 });
@@ -432,11 +431,9 @@ var sFormat = createFormat({ prefix: "S", decimals: 0 });
 var pFormat = createFormat({ prefix: "P", decimals: 0 });
 var oFormat = createFormat({ prefix: "O", decimals: 0 });
 
-var feedFormat = createFormat({ decimals: unit == MM ? 0 : 2 });
 var fFormat = createFormat({ prefix: "F", decimals: unit == MM ? 0 : 2 });
 
 var toolFormat = createFormat({ decimals: 0 });
-var tFormat = createFormat({ prefix: "T", decimals: 0 });
 
 var taperFormat = createFormat({ decimals: 1, scale: DEG });
 var secFormat = createFormat({ decimals: 3, forceDecimal: true }); // seconds - range 0.001-1000
@@ -446,25 +443,15 @@ var xOutput = createVariable({}, xFormat);
 var yOutput = createVariable({}, yFormat);
 var zOutput = createVariable({}, zFormat);
 var fOutput = createVariable({}, fFormat);
-var sOutput = createVariable({ force: true }, sFormat);
+// var sOutput = createVariable({ force: true }, sFormat);
 
 // Circular outputs
 var iOutput = createReferenceVariable({}, iFormat);
 var jOutput = createReferenceVariable({}, jFormat);
-var kOutput = createReferenceVariable({}, kFormat);
 
 // Modals
 var gMotionModal = createModal({}, gFormat); // modal group 1 // G0-G3, ...
-var gPlaneModal = createModal(
-  {
-    onchange: function () {
-      gMotionModal.reset();
-    },
-  },
-  gFormat
-); // modal group 2 // G17-19
 var gAbsIncModal = createModal({}, gFormat); // modal group 3 // G90-91
-var gFeedModeModal = createModal({}, gFormat); // modal group 5 // G93-94
 var gUnitModal = createModal({}, gFormat); // modal group 6 // G20-21
 
 // Copied from the class init
@@ -498,6 +485,7 @@ function writeBlock() {
 
 //-------------------------------------------------------------------------------------------------
 // Called in every new gcode file
+// eslint-disable-next-line no-unused-vars
 function onOpen() {
   init();
 
@@ -509,6 +497,7 @@ function onOpen() {
 
 //-------------------------------------------------------------------------------------------------
 // Called at end of gcode file
+// eslint-disable-next-line no-unused-vars
 function onClose() {
   writeActivityComment(" *** STOP begin ***");
   flushMotions();
@@ -527,6 +516,7 @@ function onClose() {
 }
 
 //-------------------------------------------------------------------------------------------------
+// eslint-disable-next-line no-unused-vars
 function onSection() {
   // Write Start gcode of the documment (after the "onParameters" with the global info)
   if (isFirstSection()) {
@@ -629,6 +619,7 @@ function resetAll() {
 
 //-------------------------------------------------------------------------------------------------
 // Called in every section end
+// eslint-disable-next-line no-unused-vars
 function onSectionEnd() {
   resetAll();
   writeActivityComment(" *** SECTION end ***");
@@ -636,38 +627,45 @@ function onSectionEnd() {
 }
 
 //-------------------------------------------------------------------------------------------------
+// eslint-disable-next-line no-unused-vars
 function onComment(message) {
   writeComment(message);
 }
 
 //-------------------------------------------------------------------------------------------------
+// eslint-disable-next-line no-unused-vars
 function onRadiusCompensation() {
   pendingRadiusCompensation = radiusCompensation;
 }
 
 //-------------------------------------------------------------------------------------------------
 // Rapid movements
+// eslint-disable-next-line no-unused-vars
 function onRapid(x, y, z) {
   rapidMovements(x, y, z);
 }
 
 //-------------------------------------------------------------------------------------------------
 // Feed movements
+// eslint-disable-next-line no-unused-vars
 function onLinear(x, y, z, feed) {
   linearMovements(x, y, z, feed);
 }
 
 //-------------------------------------------------------------------------------------------------
+// eslint-disable-next-line no-unused-vars
 function onRapid5D(_x, _y, _z, _a, _b, _c) {
   error(localize("Multi-axis motion is not supported."));
 }
 
 //-------------------------------------------------------------------------------------------------
+// eslint-disable-next-line no-unused-vars
 function onLinear5D(_x, _y, _z, _a, _b, _c, _feed) {
   error(localize("Multi-axis motion is not supported."));
 }
 
 //-------------------------------------------------------------------------------------------------
+// eslint-disable-next-line no-unused-vars
 function onCircular(clockwise, cx, cy, cz, x, y, z, feed) {
   if (pendingRadiusCompensation != RADIUS_COMPENSATION_OFF) {
     error(
@@ -681,6 +679,7 @@ function onCircular(clockwise, cx, cy, cz, x, y, z, feed) {
 }
 
 //-------------------------------------------------------------------------------------------------
+// eslint-disable-next-line no-unused-vars
 function onPower(power) {
   if (power != powerState) {
     if (power) {
@@ -696,6 +695,7 @@ function onPower(power) {
 
 //-------------------------------------------------------------------------------------------------
 // Called on Dwell Manual NC invocation
+// eslint-disable-next-line no-unused-vars
 function onDwell(seconds) {
   if (seconds > 99999.999) {
     warning(localize("Dwelling time is out of range."));
@@ -706,6 +706,7 @@ function onDwell(seconds) {
 
 //-------------------------------------------------------------------------------------------------
 // Called with every parameter in the documment/section
+// eslint-disable-next-line no-unused-vars
 function onParameter(name, value) {
   // Write gcode initial info
   // Product version
@@ -728,6 +729,7 @@ function onParameter(name, value) {
 }
 
 //-------------------------------------------------------------------------------------------------
+// eslint-disable-next-line no-unused-vars
 function onMovement(movement) {
   if (getProperty("commentMovements")) {
     var jet = tool.isJetTool && tool.isJetTool();
@@ -790,23 +792,13 @@ function onMovement(movement) {
 }
 
 //-------------------------------------------------------------------------------------------------
-function setSpindeSpeed(_spindleSpeed, _clockwise) {
-  if (currentSpindleSpeed != _spindleSpeed) {
-    if (_spindleSpeed > 0) {
-      spindleOn(_spindleSpeed, _clockwise);
-    } else {
-      spindleOff();
-    }
-    currentSpindleSpeed = _spindleSpeed;
-  }
-}
-
-//-------------------------------------------------------------------------------------------------
+// eslint-disable-next-line no-unused-vars
 function onSpindleSpeed(spindleSpeed) {
   setSpindeSpeed(spindleSpeed, tool.clockwise);
 }
 
 //-------------------------------------------------------------------------------------------------
+// eslint-disable-next-line no-unused-vars
 function onCommand(command) {
   if (getProperty("commentActivities")) {
     var stringId = getCommandStringId(command);
@@ -855,6 +847,18 @@ function onCommand(command) {
 }
 
 //-------------------------------------------------------------------------------------------------
+function setSpindeSpeed(_spindleSpeed, _clockwise) {
+  if (currentSpindleSpeed != _spindleSpeed) {
+    if (_spindleSpeed > 0) {
+      spindleOn(_spindleSpeed, _clockwise);
+    } else {
+      spindleOff();
+    }
+    currentSpindleSpeed = _spindleSpeed;
+  }
+}
+
+//-------------------------------------------------------------------------------------------------
 function handleMinMax(pair, range) {
   var rmin = range.getMinimum();
   var rmax = range.getMaximum();
@@ -868,6 +872,7 @@ function handleMinMax(pair, range) {
 
 //-------------------------------------------------------------------------------------------------
 function writeFirstSection() {
+  var i, tool;
   // dump tool information
   var toolZRanges = {};
   var vectorX = new Vector(1, 0, 0);
@@ -879,15 +884,17 @@ function writeFirstSection() {
   };
 
   var numberOfSections = getNumberOfSections();
-  for (var i = 0; i < numberOfSections; ++i) {
+  for (i = 0; i < numberOfSections; ++i) {
     var section = getSection(i);
-    var tool = section.getTool();
+    tool = section.getTool();
     var zRange = section.getGlobalZRange();
     var xRange = section.getGlobalRange(vectorX);
     var yRange = section.getGlobalRange(vectorY);
+
     handleMinMax(ranges.x, xRange);
     handleMinMax(ranges.y, yRange);
     handleMinMax(ranges.z, zRange);
+
     if (is3D() && getProperty("commentWriteTools")) {
       if (toolZRanges[tool.number]) {
         toolZRanges[tool.number].expandToRange(zRange);
@@ -929,8 +936,8 @@ function writeFirstSection() {
     writeComment(" Tools table:");
     var tools = getToolTable();
     if (tools.getNumberOfTools() > 0) {
-      for (var i = 0; i < tools.getNumberOfTools(); ++i) {
-        var tool = tools.getTool(i);
+      for (i = 0; i < tools.getNumberOfTools(); ++i) {
+        tool = tools.getTool(i);
         var comment =
           " T" +
           toolFormat.format(tool.number) +
