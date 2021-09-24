@@ -1,0 +1,8 @@
+{
+    "overrides": [
+        {
+          "files": "*.cps",
+          "options": { "parser": "babel" }
+        }
+    ]
+}
