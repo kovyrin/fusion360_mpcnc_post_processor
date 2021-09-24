@@ -933,8 +933,10 @@ Firmware3dPrinterLike.prototype.spindleOn = function (_spindleSpeed, _clockwise)
       this.askUser("Turn ON " + speedFormat.format(_spindleSpeed) + "RPM", "Spindle", false);
     }
   } else {
-    writeActivityComment(" >>> Spindle Speed " + speedFormat.format(_spindleSpeed));
-    writeBlock(mFormat.format(_clockwise ? 3 : 4), sOutput.format(spindleSpeed));
+    //writeActivityComment(" >>> Spindle Speed " + speedFormat.format(_spindleSpeed));
+    // writeBlock(mFormat.format(_clockwise ? 3 : 4), sOutput.format(spindleSpeed));
+    writeActivityComment(" >>> Turning the spindle ON by enabling the fan");
+    writeBlock(mFormat.format(106));
   }
   this.spindleEnabled = true;
 }
@@ -943,7 +945,9 @@ Firmware3dPrinterLike.prototype.spindleOff = function () {
     writeBlock(mFormat.format(300), sFormat.format(300), pFormat.format(3000));
     this.askUser("Turn OFF spindle", "Spindle", false);
   } else {
-    writeBlock(mFormat.format(5));
+    // writeBlock(mFormat.format(5));
+    writeActivityComment(" >>> Turning the spindle OFF by disabling the fan");
+    writeBlock(mFormat.format(107));
   }
   this.spindleEnabled = false;
 }
