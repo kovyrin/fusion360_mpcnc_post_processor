@@ -106,7 +106,7 @@ properties = {
 
   jobSequenceNumberIncrement: {
     title: "Job: Line increment",
-    description: "Lncrement for sequence numbers",
+    description: "Increment for sequence numbers",
     group: 1,
     type: "integer",
     value: 1,
@@ -473,6 +473,9 @@ var currentCoolantMode = 0;
 var powerState = false;
 
 //-------------------------------------------------------------------------------------------------
+var permittedCommentChars = " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,=_-*";
+
+//-------------------------------------------------------------------------------------------------
 // Writes the specified block.
 function writeBlock() {
   if (getProperty("jobSequenceNumbers")) {
@@ -487,8 +490,6 @@ function writeBlock() {
 // Called in every new gcode file
 // eslint-disable-next-line no-unused-vars
 function onOpen() {
-  init();
-
   sequenceNumber = getProperty("jobSequenceNumberStart");
   if (!getProperty("jobSeparateWordsWithSpace")) {
     setWordSeparator("");
@@ -600,8 +601,6 @@ function onSection() {
         xyzFormat.format(currentSection.getGlobalZRange().getMaximum())
     );
   }
-
-  section(); //adjust mode
 
   onCommand(COMMAND_START_SPINDLE);
   onCommand(COMMAND_COOLANT_ON);
@@ -971,9 +970,14 @@ function writeFirstSection() {
 }
 
 //-------------------------------------------------------------------------------------------------
+// Formats text as a gcode comment
+function formatComment(text) {
+  return (";" + filterText(String(text), permittedCommentChars));
+}
+
 // Output a comment
 function writeComment(text) {
-  writeln(";" + String(text).replace(/[()]/g, ""));
+  writeln(formatComment(text));
 }
 
 //-------------------------------------------------------------------------------------------------
