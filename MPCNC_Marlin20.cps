@@ -473,7 +473,8 @@ var currentCoolantMode = 0;
 var powerState = false;
 
 //-------------------------------------------------------------------------------------------------
-var permittedCommentChars = " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,=_-*";
+var permittedCommentChars =
+  " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,=_-*";
 
 //-------------------------------------------------------------------------------------------------
 // Writes the specified block.
@@ -972,7 +973,7 @@ function writeFirstSection() {
 //-------------------------------------------------------------------------------------------------
 // Formats text as a gcode comment
 function formatComment(text) {
-  return (";" + filterText(String(text), permittedCommentChars));
+  return ";" + filterText(String(text), permittedCommentChars);
 }
 
 // Output a comment
