@@ -10,7 +10,6 @@ include("DIYCNC_Common.js");
 description = "DIYCNC Milling/Laser - Marlin 2.0";
 
 mergeProperties(properties, properties3dPrinter);
-mergeProperties(propertyDefinitions, propertyDefinitions3dPrinter);
 
 function FirmwareMarlin20() {
     Firmware3dPrinterLike.apply(this, arguments);
