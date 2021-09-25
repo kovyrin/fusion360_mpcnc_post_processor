@@ -93,7 +93,7 @@ properties = {
     description: "Show sequence numbers",
     group: 1,
     type: "boolean",
-    value: true,
+    value: false,
   },
 
   jobSequenceNumberStart: {
