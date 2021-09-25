@@ -188,7 +188,7 @@ properties = {
 
   probeUseHomeZ: {
     title: "Probe: Use Home Z",
-    description: "Use G28 or G38 for probing",
+    description: "Use G28 for probing instead off G38",
     group: 3,
     type: "boolean",
     value: true,
@@ -255,18 +255,6 @@ properties = {
     group: 4,
     type: "integer",
     value: 4,
-  },
-
-  cutterGrblMode: {
-    title: "Laser: GRBL mode",
-    description: "GRBL mode of the laser/plasma cutter",
-    group: 4,
-    type: "integer",
-    value: 4,
-    values: [
-      { title: "M4 S{PWM}/M5 dynamic power", id: 4 },
-      { title: "M3 S{PWM}/M5 static power", id: 3 },
-    ],
   },
 
   gcodeStartFile: {
