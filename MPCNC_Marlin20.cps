@@ -1212,7 +1212,7 @@ function coolantA(on) {
 //-------------------------------------------------------------------------------------------------
 function coolantB(on) {
   writeBlock(
-    on ? getProperty("coolantBMarlinOn") : roperties.coolantBMarlinOff
+    on ? getProperty("coolantBMarlinOn") : getProperty("coolantBMarlinOff")
   );
 }
 
