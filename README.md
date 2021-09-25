@@ -2,26 +2,23 @@
 DIY CNC Fusion 360 CAM posts processor
 ====
 
-This is modified fork of https://github.com/martindb/mpcnc_posts_processor
+This is heavily modified fork of https://github.com/martindb/mpcnc_posts_processor focusing on making the post-processor better for Marlin-based MPCNC routers.
 
-CAM posts processor for use with Fusion 360 and [MPCNC](https://www.v1engineering.com/assembly/) with RAMPS or any 3-axis DIY CNC.
+CAM post-processor for Fusion 360 and [MPCNC](https://www.v1engineering.com/assembly/) with RAMPS or other Marlin-based control boards.
 Supported firmwares:
 - Marlin 2.0
-- Repetier firmware 1.0.3 (not tested. gcode is same as for Marlin)
-- GRBL 1.1
-- RepRap firmware (Duet3d) 
+- Repetier firmware 1.0.3 (not tested, but gcode is should bne the same as for Marlin)
 
 Some design points:
 - Setup operation types: Milling, Water/Laser/Plasma
 - Support MM and Inches units (**but all properties MUST be set in MM**)
 - XY and Z independent travel speeds. Rapids are done with G0.
-- Arcs support on XY plane (Marlin/Repetier/RepRap) or all panes (Grbl)
-- Tested with LCD display and SD card (built in tool change require printing from SD and LCD to restart)
-- Support for 3 different laser power using "cutting modes" (through, etch, vaporize)
+- Arcs support on XY plane
+- Tested with LCD display and SD card (built in tool change requires printing from SD and LCD to restart)
+- Support for 3 different laser power levels using "cutting modes" (through, etch, vaporize)
 - Support 2 coolant channels. You may attach relays to control external devices - as example air jet valve.
-- Customizable level of verbosity of comments
+- Customizable level of verbosity for comments
 - Support line numbers
-- Support GRBL laser mode (**be noted that you probably to have enabled laser mode [$32=1](https://github.com/gnea/grbl/wiki/Grbl-v1.1-Laser-Mode)**)
 
 ![screenshot](/screenshot.jpg "screenshot")
 
@@ -31,30 +28,27 @@ Some design points:
 
 |Title|Description|Default|
 |---|---|---|
-Job: Firmware|Target firmware (marlin 2.0 or Repetir 1.0.3 / GRBL 1.1) / RepRap Firmware.|**Marlin**|
 Job: Travel Speed XY|High speed for travel movements X & Y (mm/min).|**2500 mm/min**|
 Job: Travel Speed Z|High speed for travel movements Z (mm/min).|**300 mm/min**|
-Job: Marlin: Manual Spindle On/Off|Set it to true when the motor of your spindle is controlled by manual switch. So the preprocessor will issue additional pauses for TURN ON/TURN OFF the motor.|**true**|
+Job: Marlin: Manual Spindle On/Off|Set it to true when the motor of your spindle is controlled by manual switch. So the preprocessor will issue additional pauses to allow the operator to TURN ON/TURN OFF the motor.|**true**|
 Job: Marlin: Enforce feedrate|Add feedrate to each movement g-code.|**false**|
 Job: Use Arcs|Use G2/G3 g-codes fo circular movements.|**true**|
-Job: Reset on start (G92)|Set origin when gcode start (G92 X0 Y0 Z0). Only apply if not using gcodeStartFile.|**true**|
-Job: Goto 0 at end|Go X0 Y0 at gcode end. Useful to find if your machine loss steeps or have any other mechanic issue (like loose pulleys). Also useful for repetitive jobs. Only apply if not using gcodeStopFile.|**true**|
+Job: Reset on start (G92)|Set origin when gcode start (G92 X0 Y0 Z0). Only applies if not using gcodeStartFile.|**false**|
+Job: Goto 0 at end|Goes to the origin X0, Y0 at the end of the program. Useful to find if your machine lost steps or has any other mechanic issues (like loose pulleys). Also useful for repetitive jobs. Only applies if not using gcodeStopFile.|**true**|
 Job: Use Arcs|Use G2/G3 g-codes fo circular movements.|**true**|
 Job: Line numbers|Show sequence numbers.|**false**|
 Job: Line start|First sequence number.|**10**|
 Job: Line increment|Increment for sequence numbers.|**1**|
 Job: Separate words|Specifies that the words should be separated with a white space.|**true**|
-Job: Duet: Milling Mode|GCode command to setup Duet3d milling mode.|**"M453 P2 I0 R30000 F200"**|
-Job: Duet: Laser Mode|GCode command to setup Duet3d laser mode.|**"M452 P2 I0 R255 F200"**|
 
 ## Group 2: Tool change
 
 |Title|Description|Default|
 |---|---|---|
-Change: Enabled|Enable tool change code (bultin tool change requires LCD display)|**true**|
-Change: X|X position for builtin tool change|**0**|
-Change: Y|Y position for builtin tool change|**0**|
-Change: Z|Z position for builtin tool change|**40**|
+Change: Enabled|Enable tool change code (bult-in tool change requires LCD display)|**false**|
+Change: X|X position for built-in tool change|**0**|
+Change: Y|Y position for built-in tool change|**0**|
+Change: Z|Z position for built-in tool change|**40**|
 Change: Make Z Probe|Z probe after tool change|**true**|
 Change: Disable Z stepper|Disable Z stepper when change a tool|**false**|
   
@@ -64,7 +58,7 @@ Change: Disable Z stepper|Disable Z stepper when change a tool|**false**|
 |---|---|---|
 Probe: On job start|Execute probe gcode on job start|**true**|
 Probe: Plate thickness|Plate thickness|**0.8**|
-Probe: Use Home Z|Use G28 or G38 for probing|**true**|
+Probe: Use Home Z|Use G28 for probing instead of G38|**true**|
 Probe: G38 target|Probing up to Z position|**-10**|
 Probe: G38 speed|Probing with speed|**30**|
 
@@ -77,7 +71,6 @@ Laser: On - Through|Persent of power to turn on the laser/plasma cutter in throu
 Laser: On - Etch|Persent of power to turn on the laser/plasma cutter in etch mode|**40**||
 Laser: Marlin mode|Marlin mode of the laser/plasma cutter ()|**M106**|M106 S{PWM}/M107 = 0; M3 O{PWM}/M5 = 1; M42 P{pin} S{PWM} = 2;|
 Laser: Marlin pin|Marlin custom pin number for the laser/plasma cutter|**4**||
-Laser: GRBL mode|GRBL mode of the laser/plasma cutter|**M4**|M4 S{PWM}/M5 dynamic power = 4; M3 S{PWM}/M5 static power = 3;|
 
 ## Group 5: Override behaviour by external files
 
@@ -115,7 +108,7 @@ Comment: Trace Movements|Write stringified movements called by CAM|true|
 
 # Sample of issued code blocks
 
-## Gcode of milling with manually control spindel
+## Gcode of milling with manually control spindle
 
 ```G-code
 ;Fusion 360 CAM 2.0.4860
@@ -256,7 +249,7 @@ M117 Job end
 ; *** STOP end ***
 ```
 
-## Gcode of milling with spindel controlled by M3/M4/M5
+## Gcode of milling with spindle controlled by M3/M4/M5
 
 ```G-code
 ;Fusion 360 CAM 2.0.4860
@@ -401,7 +394,7 @@ M117 Job end
 ; *** STOP end ***
 ```
 
-## Gcode of milling with spindel controlled by M3/M4/M5 with using Coolants (both A and B channels)
+## Gcode of milling with spindle controlled by M3/M4/M5 with using Coolants (both A and B channels)
 
 ```G-code
 ;Fusion 360 CAM 2.0.4860
@@ -657,7 +650,7 @@ M117 Job end
 
 [Dumper PostProcessor](https://cam.autodesk.com/hsmposts?p=dump)
 
-[Library of exist post processors](https://cam.autodesk.com/hsmposts)
+[Library of existing post processors](https://cam.autodesk.com/hsmposts)
 
 [Post processors forum](https://forums.autodesk.com/t5/hsm-post-processor-forum/bd-p/218)
 
