@@ -2,7 +2,7 @@
 DIY CNC Fusion 360 CAM posts processor
 ====
 
-This is heavily modified fork of https://github.com/martindb/mpcnc_posts_processor focusing on making the post-processor better for Marlin-based MPCNC routers.
+This is a heavily modified fork of https://github.com/martindb/mpcnc_posts_processor focusing on making the post-processor better for Marlin-based MPCNC routers.
 
 CAM post-processor for Fusion 360 and [MPCNC](https://www.v1engineering.com/assembly/) with RAMPS or other Marlin-based control boards.
 Supported firmwares:
